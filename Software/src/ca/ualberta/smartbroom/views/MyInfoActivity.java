@@ -1,5 +1,6 @@
-package ca.ualberta.smartbroom;
+package ca.ualberta.smartbroom.views;
 
+import ca.ualberta.smartbroom.views.R;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -19,7 +20,7 @@ public class MyInfoActivity extends Activity {
 		setContentView(R.layout.activity_my_info);
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new MyOptionsFragment()).commit();
 		}
 	}
 
@@ -45,15 +46,15 @@ public class MyInfoActivity extends Activity {
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class MyOptionsFragment extends Fragment {
 
-		public PlaceholderFragment() {
+		public MyOptionsFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_my_info,
+			View rootView = inflater.inflate(R.layout.fragment_my_options,
 					container, false);
 			return rootView;
 		}
