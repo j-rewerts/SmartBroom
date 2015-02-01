@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/list_item_spacing_bottom">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/default_day_of_week"
+            android:id="@+id/dayOfTheWeek"
+            android:layout_weight="1"
+            android:layout_marginLeft="@dimen/list_item_spacing_left"
+            android:textSize="@dimen/text_normal" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/default_date"
+            android:id="@+id/date"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:layout_marginRight="@dimen/list_item_spacing_left"
+            android:textSize="@dimen/text_normal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/menu50"
+            android:layout_margin="5dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical"
+            android:layout_weight="5">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="@string/default_weight_applied"
+                android:id="@+id/weightApplied"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_large" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:text="@string/default_sweep_frequency"
+                android:id="@+id/sweepFrequency"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_normal" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/right4_50"
+                android:layout_margin="5dp" />
+        </FrameLayout>
+
+    </LinearLayout>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:background="#c0c0c0"
+        android:layout_marginTop="@dimen/list_item_spacing_top"
+        android:layout_marginBottom="@dimen/list_item_spacing_bottom"
+        android:layout_marginRight="@dimen/list_item_spacing_right"
+        android:layout_marginLeft="@dimen/list_item_spacing_left" />
+
+</LinearLayout>

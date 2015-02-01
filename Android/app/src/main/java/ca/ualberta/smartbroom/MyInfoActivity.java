@@ -19,7 +19,10 @@ import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MyInfoActivity extends Activity {
 
@@ -31,8 +34,6 @@ public class MyInfoActivity extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new MyOptionsFragment()).commit();
 		}
-
-
 	}
 
 	@Override
@@ -63,9 +64,11 @@ public class MyInfoActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
+
+    /**
+     * The main fragment. Allows users to view previous data and to view certain calculations
+     * of previous data.
+     */
 	public static class MyOptionsFragment extends Fragment {
 
 		public MyOptionsFragment() {
@@ -81,7 +84,35 @@ public class MyInfoActivity extends Activity {
                 return rootView;
             }
 
+            LinearLayout activityLayout = (LinearLayout) rootView.findViewById(R.id.activityLayout);
+            activityLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    LinearLayout ll = (LinearLayout) view;
+                }
+            });
+
 			return rootView;
 		}
 	}
+
+    public static class MyGamesFragment extends Fragment {
+
+        public MyGamesFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.fragment_my_options,
+                    container, false);
+
+            MyGamesListAdapter adapter = new MyGamesListAdapter(getActivity(), R.layout.my_game_list_item, new ArrayList<GameDataModel>());
+
+            ListView lv = (ListView) rootView.findViewById(R.id.myGamesListView);
+            lv.setAdapter(adapter);
+
+            return rootView;
+        }
+    }
 }

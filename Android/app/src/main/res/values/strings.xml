@@ -9,7 +9,15 @@
     <string name="activity">ACTIVITIES</string>
     <string name="game">GAMES</string>
     <string name="practise">PRACTISE</string>
+    <string name="best_game_pressure">BEST GAME - PRESSURE</string>
+    <string name="best_game_sweeping">BEST GAME - SWEEP FREQUENCY</string>
     <string name="default_num_tracked">0</string>
+    <string name="default_best">0</string>
+    <string name="default_month">month</string>
+    <string name="default_date">month day, year</string>
+    <string name="default_day_of_week">day of week</string>
+    <string name="default_weight_applied">0 kg</string>
+    <string name="default_sweep_frequency">0 sweeps per second</string>
     <string name="tracked">Tracked</string>
     <string name="connect">CONNECT</string>
     <string name="title_activity_bluetooth_dialog">BluetoothDialogActivity</string>

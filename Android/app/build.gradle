@@ -27,4 +27,5 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.example.library:MelodySmart:1.0.0@aar'
+    compile 'com.jjoe64:graphview:4.0.0'
 }
