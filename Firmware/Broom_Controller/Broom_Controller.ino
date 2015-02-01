@@ -89,21 +89,6 @@ void setup()
   selectBLE();
   
   setupPeripheral();
-  
-  //check mode
-  boolean inCentralMode = false;
-  BTModu.amCentral(inCentralMode); 
-  
-  if(inCentralMode){
-    selectPC();
-    Serial.println("Is Central Mode");
-    selectBLE();
-  }
-  else{
-    selectPC();
-    Serial.println("Is Peripheral Mode");
-    selectBLE();
-  }
 }
 
 void loop()
