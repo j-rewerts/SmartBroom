@@ -15,7 +15,7 @@ public class BLEDevice {
     }
 
     public String getDeviceName() {
-        return mDeviceName;
+        return (mDeviceName == null) ? "Unknown" : mDeviceName;
     }
 
     public void setDeviceName(String mDeviceName) {

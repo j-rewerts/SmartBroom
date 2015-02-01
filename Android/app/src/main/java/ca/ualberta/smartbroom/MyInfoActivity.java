@@ -82,6 +82,8 @@ public class MyInfoActivity extends Activity {
      */
 	public static class MyOptionsFragment extends Fragment implements GraphListener{
 
+        private Thread worker;
+
 		public MyOptionsFragment() {
 
 		}
@@ -106,6 +108,25 @@ public class MyInfoActivity extends Activity {
                     LinearLayout ll = (LinearLayout) view;
                 }
             });
+
+            if (worker == null) {
+                worker = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (true) {
+                            BLEDeviceConnection.getInstance().cmdAck();
+                            BLEDeviceConnection.getInstance().cmdAccel();
+                            BLEDeviceConnection.getInstance().cmdPressure();
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                break;
+                            }
+                        }
+                    }
+                });
+                worker.run();
+            }
 
 			return rootView;
 		}

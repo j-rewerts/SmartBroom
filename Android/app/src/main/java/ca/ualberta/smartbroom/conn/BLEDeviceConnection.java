@@ -1,6 +1,8 @@
 package ca.ualberta.smartbroom.conn;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -176,15 +178,23 @@ public class BLEDeviceConnection implements MelodySmartListener {
     @Override
     public void onDeviceConnected() {
         connected = true;
-        if (context != null)
-            Toast.makeText(context, "Connected to device", Toast.LENGTH_SHORT).show();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            public void run() {
+                Toast.makeText(context, "Connected to device", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
     public void onDeviceDisconnected() {
         connected = false;
-        if (context != null)
-            Toast.makeText(context, "Disconnected from device", Toast.LENGTH_SHORT).show();
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            public void run() {
+                Toast.makeText(context, "Disconnected from device", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
