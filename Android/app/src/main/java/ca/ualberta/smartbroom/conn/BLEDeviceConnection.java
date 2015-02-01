@@ -39,8 +39,6 @@ public class BLEDeviceConnection implements MelodySmartListener {
         device = MelodySmartDevice.getInstance();
         device.registerListener(this);
         device.getDataService().registerListener(dataServiceListener);
-        device.getBatteryService().registerListener(batteryServiceListener);
-        device.getDeviceInfoService().registerListener(deviceInfoListener);
     }
 
     public void connect(BLEDevice bleDevice, Context context) {
@@ -57,20 +55,6 @@ public class BLEDeviceConnection implements MelodySmartListener {
         device.disconnect();
     }
 
-    private BatteryService.Listener batteryServiceListener = new BatteryService.Listener() {
-
-        @Override
-        public void onBatteryLevelChanged(final int level) {
-            Log.d(TAG, "Got battery level " + level);
-        }
-
-        @Override
-        public void onConnected(boolean found) {
-            Log.d(TAG, "Connected to battery level service");
-            device.getBatteryService().enableNotifications(true);
-        }
-    };
-
     private DataService.Listener dataServiceListener = new DataService.Listener() {
 
         @Override
@@ -82,7 +66,12 @@ public class BLEDeviceConnection implements MelodySmartListener {
 
         @Override
         public void onReceived(final String data) {
+            if (data == null) {
+                return;
+            }
+
             Log.d(TAG, "Data received: " + data);
+
             DataManager dataManager = DataManager.getInstance();
             dataManager.setValue(data);
 
@@ -94,53 +83,15 @@ public class BLEDeviceConnection implements MelodySmartListener {
                 Log.d(TAG, "Acceleration: " + data.substring("RS_A ".length()));
             } else if (data.startsWith("RS_P_1")) {
                 Log.d(TAG, "Pressure 1: " + data.substring("RS_P_1 ".length()));
-            } else if (data.startsWith("RS_P_2")) {
+            } else if (data.startsWith("RS_P")) {
+                Log.d(TAG, "Pressure Average: " + data.substring("RS_P ".length()));
+            }else if (data.startsWith("RS_P_2")) {
                 Log.d(TAG, "Pressure 2: " + data.substring("RS_P_2 ".length()));
             } else if (data.startsWith("RS_P_3")) {
                 Log.d(TAG, "Pressure 3: " + data.substring("RS_P_3 ".length()));
             } else if (data.startsWith("RS_P_4")) {
                 Log.d(TAG, "Pressure 4: " + data.substring("RS_P_4 ".length()));
             }
-        }
-    };
-
-
-    private DeviceInfoService.Listener deviceInfoListener = new DeviceInfoService.Listener() {
-        @Override
-        public void onInfoRead(final DeviceInfoService.INFO_TYPE type, final String value) {
-            switch(type) {
-                case MANUFACTURER_NAME:
-                    Log.d(TAG, "Manufacturer name: " + value);
-                    break;
-                case MODEL_NUMBER:
-                    Log.d(TAG, "Model number: " + value);
-                    break;
-                case SERIAL_NUMBER:
-                    Log.d(TAG, "Serial number: " + value);
-                    break;
-                case HARDWARE_REV:
-                    Log.d(TAG, "HW rev: " + value);
-                    break;
-                case FIRMWARE_REV:
-                    Log.d(TAG, "FW rev " + value);
-                    break;
-                case SOFTWARE_REV:
-                    Log.d(TAG, "SW rev: " + value);
-                    break;
-                case SYSTEM_ID:
-                    Log.d(TAG, "System id: " + value);
-                    break;
-                case PNP_ID:
-                    Log.d(TAG, "PNP id: " + value);
-                    break;
-            }
-            readNextInfo();
-        }
-
-        @Override
-        public void onConnected(boolean found) {
-            /* Start reading all the characteristics */
-            readNextInfo();
         }
     };
 
@@ -152,10 +103,39 @@ public class BLEDeviceConnection implements MelodySmartListener {
         if (!device.getDataService().available()) {
             return false;
         }
-        device.getDataService().send("RQ_P_1");
-        device.getDataService().send("RQ_P_2");
+
+        /*device.getDataService().send("RQ_P_1");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //device.getDataService().send("RQ_P_2");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         device.getDataService().send("RQ_P_3");
-        device.getDataService().send("RQ_P_4");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //device.getDataService().send("RQ_P_4");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+        device.getDataService().send("RQ_P");
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         return true;
     }
 

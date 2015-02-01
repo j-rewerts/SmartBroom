@@ -21,6 +21,8 @@ public class DataManager {
     private double pressure3;
     private double pressure4;
 
+    private double avgPressure;
+
     private List<Fragment> subscriptions;
 
     public static DataManager getInstance() {
@@ -52,12 +54,16 @@ public class DataManager {
         // The second block should be an integer
         String[] parts = input.split(" ");
 
+        if (parts.length < 2) {
+            return;
+        }
+
         int tempData;
         switch (parts[0]) {
             case "RS_A":
                 //Accelerometer data
                 tempData = Integer.parseInt(parts[1]);
-                currentFreq = tempData / 10;
+                currentFreq = tempData / 10.0f;
                 notifySubs(currentFreq, GraphListener.frequencyGraph);
                 break;
 
@@ -87,6 +93,13 @@ public class DataManager {
                 tempData = Integer.parseInt(parts[1]);
                 pressure4 = tempData;
                 notifySubs(pressure4, GraphListener.pressureGraph);
+                break;
+
+            case "RS_P":
+                // Average Pressure
+                tempData = Integer.parseInt(parts[1]);
+                avgPressure = tempData;
+                notifySubs(avgPressure, GraphListener.pressureGraph);
                 break;
         }
     }

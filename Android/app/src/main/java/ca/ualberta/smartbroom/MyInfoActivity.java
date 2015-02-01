@@ -11,6 +11,8 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +23,7 @@ import android.os.Build;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bluecreation.melodysmart.DataService;
@@ -32,6 +35,7 @@ import java.util.ArrayList;
 
 public class MyInfoActivity extends Activity {
 
+    private Thread worker;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,6 +44,35 @@ public class MyInfoActivity extends Activity {
 			getFragmentManager().beginTransaction()
 					.add(R.id.container, new MyOptionsFragment()).commit();
 		}
+
+        /*if (worker == null) {
+            worker = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        BLEDeviceConnection.getInstance().cmdAck();
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                        BLEDeviceConnection.getInstance().cmdAccel();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                        BLEDeviceConnection.getInstance().cmdPressure();
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            break;
+                        }
+                    }
+                }
+            });
+            worker.start();
+        }*/
 	}
 
 	@Override
@@ -55,10 +88,7 @@ public class MyInfoActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-        else if (id == R.id.action_connect) {
+        if (id == R.id.action_connect) {
             FragmentManager fm = getFragmentManager();
             DialogFragment newFragment = new BLEDeviceDialog();
             newFragment.show(fm, "BLE_DEVICE");
@@ -66,11 +96,6 @@ public class MyInfoActivity extends Activity {
             return true;
         } else if (id == R.id.action_disconnect) {
             BLEDeviceConnection.getInstance().disconnect();
-        } else if (id == R.id.action_command) {
-            BLEDeviceConnection.getInstance().cmdAck();
-            BLEDeviceConnection.getInstance().cmdEcho("DATA!");
-            BLEDeviceConnection.getInstance().cmdAccel();
-            BLEDeviceConnection.getInstance().cmdPressure();
         }
 		return super.onOptionsItemSelected(item);
 	}
@@ -82,7 +107,6 @@ public class MyInfoActivity extends Activity {
      */
 	public static class MyOptionsFragment extends Fragment implements GraphListener{
 
-        private Thread worker;
 
 		public MyOptionsFragment() {
 
@@ -94,9 +118,7 @@ public class MyInfoActivity extends Activity {
 			View rootView = inflater.inflate(R.layout.fragment_my_options,
 					container, false);
 
-            if (getView() == null) {
-                return rootView;
-            }
+
 
             DataManager dm = DataManager.getInstance();
             dm.subscribe(this);
@@ -109,48 +131,31 @@ public class MyInfoActivity extends Activity {
                 }
             });
 
-            if (worker == null) {
-                worker = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        while (true) {
-                            BLEDeviceConnection.getInstance().cmdAck();
-                            BLEDeviceConnection.getInstance().cmdAccel();
-                            BLEDeviceConnection.getInstance().cmdPressure();
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                break;
-                            }
-                        }
-                    }
-                });
-                worker.run();
-            }
+
 
 			return rootView;
 		}
 
         @Override
-        public void callback(Fragment f, double value, String graph) {
-            View view = f.getView().getRootView();
+        public void callback(Fragment f, final double value, String graph) {
+            final View view = f.getView().getRootView();
             if (graph.equals(GraphListener.frequencyGraph)) {
-                GraphView graphView = (GraphView) view.findViewById(R.id.frequencyGraph);
-                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(new DataPoint[] {
-                    new DataPoint(0, value)
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        TextView tv = (TextView) view.findViewById(R.id.frequencyText);
+                        tv.setText(String.valueOf(value));
+                    }
                 });
-
-                graphView.removeAllSeries();
-                graphView.addSeries(series);
             }
             else if (graph.equals(GraphListener.pressureGraph)) {
-                GraphView graphView = (GraphView) view.findViewById(R.id.pressureGraph);
-                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(new DataPoint[] {
-                        new DataPoint(0, value)
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        TextView tv = (TextView) view.findViewById(R.id.pressureText);
+                        tv.setText(String.valueOf(value));
+                    }
                 });
-
-                graphView.removeAllSeries();
-                graphView.addSeries(series);
             }
         }
     }
