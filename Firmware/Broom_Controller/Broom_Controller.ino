@@ -17,10 +17,6 @@ January 31st 2014 - Jacob Ortt
 
 BLEMate2 BTModu(&Serial);
 
-/*both these will go away in final design*/
-#define LED 4  //test LED pin is 4
-#define MUX_SELECT 2 //select for serial mux on pin 2
-
 #define ACCEL_X 0
 #define ACCEL_Y 1
 #define ACCEL_Z 2
@@ -37,20 +33,19 @@ int pressBuf1[50];
 int pressBuf2[50];
 int pressBuf3[50];
 int pressBuf4[50];
-int buffPtr;
+int buffPtr;\
+int responseNum = 0;
 
 long lastADCLog;
+long lastBlast;
 
 void setup()
 {
   lastADCLog = millis();
+  lastBlast = millis();
   buffPtr = 0;
   
-  pinMode(MUX_SELECT, OUTPUT);
-  pinMode(LED, OUTPUT);
-  
   Serial.begin(9600);
-  selectBLE();
   
   // Regarding function return values: most functions that interact with the
   //  BC118 will return BLEMate2::opResult values. The possible values here
@@ -74,8 +69,8 @@ void setup()
   //  strings from the BC118.
   if (BTModu.reset() != BLEMate2::SUCCESS)
   {
-    selectPC();
-    Serial.println("Module reset error!");
+    //selectPC();
+    //Serial.println("Module reset error!");
     while (1);
   }
 
@@ -86,8 +81,8 @@ void setup()
   //  resetting.
   if (BTModu.restore() != BLEMate2::SUCCESS)
   {
-    selectPC();
-    Serial.println("Module restore error!");
+    //selectPC();
+    //Serial.println("Module restore error!");
     while (1);
   }
   // writeConfig() stores the current settings in non-volatile memory, so they
@@ -96,43 +91,25 @@ void setup()
   //  to write/reset when changing anything.
   if (BTModu.writeConfig() != BLEMate2::SUCCESS)
   {
-    selectPC();
-    Serial.println("Module write config error!");
+    //selectPC();
+    //Serial.println("Module write config error!");
     while (1);
   }
   // One more reset, to make the changes take effect.
   if (BTModu.reset() != BLEMate2::SUCCESS)
   {
-    selectPC();
-    Serial.println("Second module reset error!");
+    //selectPC();
+    //Serial.println("Second module reset error!");
     while (1);
   }
-  selectBLE();
+  //selectBLE();
   
   setupPeripheral();
 }
 
 void loop()
 {
-
-  // Since I'm going to be reporting strings back over serial to the PC, I want
-  //  to make sure that I'm (probably) not going to be looking away from the BLE
-  //  device during a data receive period. I'll *guess* that, if more than 1000
-  //  milliseconds has elapsed since my last receive, that I'm in a quiet zone
-  //  and I can switch over to the PC to report what I've heard.
-  static String fullBuffer = "";
-  static long lastRXTime = millis();
-  if (lastRXTime + 1000 < millis())
-  {
-    if (fullBuffer != "")
-    {
-      selectPC();
-      Serial.println(fullBuffer);
-      selectBLE();
-      fullBuffer = "";
-      digitalWrite(LED, LOW);
-    }
-  }
+  /*
   static String inputBuffer;
     // This is the peripheral example code.
 
@@ -147,7 +124,6 @@ void loop()
   while (Serial.available() > 0)
   {
     inputBuffer.concat((char)Serial.read());
-    lastRXTime = millis();
   }
   // We'll probably see a lot of lines that end with \n\r- that's the default
   //  line ending for all the connect info messages, for instance. We can
@@ -156,18 +132,13 @@ void loop()
   int endLoc = inputBuffer.indexOf("\n\r");
   if (endLoc != -1)
   {
-    /*
-    inputBuffer.trim();
-    fullBuffer += "in-" + inputBuffer;
-    String possibleCommand = inputBuffer.substring(0, endLoc);
-    fullBuffer += "pos-" + possibleCommand;
-    */
+
     
     if (inputBuffer.startsWith("RCV="))
     {
       inputBuffer.trim(); // Remove \n\r from end.
       inputBuffer.remove(0,4); // Remove RCV= from front.
-      fullBuffer += inputBuffer;
+      //fullBuffer += inputBuffer;
       
       decodeCommand(inputBuffer);
       
@@ -181,6 +152,7 @@ void loop()
     //inputBuffer = "";
     //possibleCommand = "";
   }
+  */
   
   if(lastADCLog + 20 < millis())
   {
@@ -208,6 +180,30 @@ void loop()
       */
     }
     lastADCLog = millis();
+  }
+  
+  if(lastBlast + 500 < millis())
+  {
+    if(responseNum == 0)
+    {
+      //send freq
+      BTModu.sendData("RS_A " + String(getAccelFreq()));
+      responseNum = 1;
+    }
+    else
+    {
+      //average pressure
+      int sum = 0;
+      sum += getPress1Data();
+      sum += getPress2Data();
+      sum += getPress3Data();
+      sum += getPress4Data();
+      int ave = sum / 4;
+      BTModu.sendData("RS_P " + String(ave));
+      
+      responseNum = 0;
+    }
+    lastBlast = millis();
   }
 }
 
@@ -269,6 +265,17 @@ void decodeCommand(String request)
     //pressure request recieved
     BTModu.sendData("RS_P_4 " + String(getPress4Data()));
   }
+  else if(request.equals("RQ_P"))
+  {
+    //average pressure
+    int sum = 0;
+    sum += getPress1Data();
+    sum += getPress2Data();
+    sum += getPress3Data();
+    sum += getPress4Data();
+    int ave = sum / 4;
+    BTModu.sendData("RS_P " + String(ave));
+  }
   else if(request.equals("RQ_A"))
   {
     //accelerometer request recieved
@@ -284,13 +291,6 @@ void decodeCommand(String request)
     //echo request recieved
     request.remove(0, 8);
     BTModu.sendData("RS_ECHO " + request);
-  }
-  else if(request.equals("LED ON"))
-  {
-    //led command recieved
-    leds_recieved++;
-    digitalWrite(LED, HIGH);
-    BTModu.sendData("Sure thing boss - " + String(leds_recieved));
   }
   else
   {
@@ -383,17 +383,4 @@ int getAccelFreq()
     prev = curr;
   }
   return freq;
-}
-
-//funtions to change where serial port is directed
-void selectPC()
-{
-  Serial.flush();
-  digitalWrite(MUX_SELECT, LOW);
-}
-
-void selectBLE()
-{
-  Serial.flush();
-  digitalWrite(MUX_SELECT, HIGH);
 }
