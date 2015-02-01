@@ -55,7 +55,7 @@ public class BLEDeviceDialog extends DialogFragment {
                 });
 
         device = MelodySmartDevice.getInstance();
-        device.init(getActivity());
+        device.init(getActivity().getApplicationContext());
 
         scanLeDevice(true);
 
