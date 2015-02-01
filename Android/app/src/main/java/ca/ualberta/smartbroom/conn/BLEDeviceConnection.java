@@ -195,8 +195,4 @@ public class BLEDeviceConnection implements MelodySmartListener {
             nextInfoType++;
         }
     }
-
-    public interface DataListener {
-        public void onReceived(String data);
-    }
 }
