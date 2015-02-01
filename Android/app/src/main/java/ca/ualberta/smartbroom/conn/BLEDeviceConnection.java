@@ -11,6 +11,7 @@ import com.bluecreation.melodysmart.MelodySmartDevice;
 import com.bluecreation.melodysmart.MelodySmartListener;
 
 import ca.ualberta.smartbroom.BLEDevice;
+import ca.ualberta.smartbroom.DataManager;
 
 /**
  * Created by Stephen on 2015-01-31.
@@ -80,6 +81,9 @@ public class BLEDeviceConnection implements MelodySmartListener {
         @Override
         public void onReceived(final String data) {
             Log.d(TAG, "Data received: " + data);
+            DataManager dataManager = DataManager.getInstance();
+            dataManager.setValue(data);
+
             if (data.startsWith("RS_ACK")) {
                 Log.d(TAG, "Acknowledged by device.");
             } else if (data.startsWith("RS_ECHO")) {

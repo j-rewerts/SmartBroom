@@ -227,12 +227,29 @@
         </LinearLayout>
 
 
-        <com.jjoe64.graphview.helper.GraphViewXML
-            android:layout_width="match_parent"
-            android:layout_height="100dip"
-            app:seriesData="0=5;2=5;3=0;4=2"
-            app:seriesType="line"
-            app:seriesColor="#ee0000" />
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <com.jjoe64.graphview.helper.GraphViewXML
+                android:id="@+id/frequencyGraph"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                app:seriesData="0=5;2=5;3=0;4=2"
+                app:seriesType="bar"
+                app:seriesColor="#ee0000"
+                android:layout_weight="1" />
+
+            <com.jjoe64.graphview.helper.GraphViewXML
+                android:id="@+id/pressureGraph"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                app:seriesData="0=5;2=5;3=0;4=2"
+                app:seriesType="bar"
+                app:seriesColor="#ee0000"
+                android:layout_weight="1" />
+        </LinearLayout>
 
 
     </LinearLayout>

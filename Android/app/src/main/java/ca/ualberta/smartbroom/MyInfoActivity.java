@@ -24,6 +24,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bluecreation.melodysmart.DataService;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.BarGraphSeries;
+import com.jjoe64.graphview.series.DataPoint;
 
 import java.util.ArrayList;
 
@@ -77,9 +80,10 @@ public class MyInfoActivity extends Activity {
      * The main fragment. Allows users to view previous data and to view certain calculations
      * of previous data.
      */
-	public static class MyOptionsFragment extends Fragment {
+	public static class MyOptionsFragment extends Fragment implements GraphListener{
 
 		public MyOptionsFragment() {
+
 		}
 
 		@Override
@@ -92,6 +96,9 @@ public class MyInfoActivity extends Activity {
                 return rootView;
             }
 
+            DataManager dm = DataManager.getInstance();
+            dm.subscribe(this);
+
             LinearLayout activityLayout = (LinearLayout) rootView.findViewById(R.id.activityLayout);
             activityLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -102,7 +109,30 @@ public class MyInfoActivity extends Activity {
 
 			return rootView;
 		}
-	}
+
+        @Override
+        public void callback(Fragment f, double value, String graph) {
+            View view = f.getView().getRootView();
+            if (graph.equals(GraphListener.frequencyGraph)) {
+                GraphView graphView = (GraphView) view.findViewById(R.id.frequencyGraph);
+                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(new DataPoint[] {
+                    new DataPoint(0, value)
+                });
+
+                graphView.removeAllSeries();
+                graphView.addSeries(series);
+            }
+            else if (graph.equals(GraphListener.pressureGraph)) {
+                GraphView graphView = (GraphView) view.findViewById(R.id.pressureGraph);
+                BarGraphSeries<DataPoint> series = new BarGraphSeries<DataPoint>(new DataPoint[] {
+                        new DataPoint(0, value)
+                });
+
+                graphView.removeAllSeries();
+                graphView.addSeries(series);
+            }
+        }
+    }
 
     public static class MyGamesFragment extends Fragment {
 
