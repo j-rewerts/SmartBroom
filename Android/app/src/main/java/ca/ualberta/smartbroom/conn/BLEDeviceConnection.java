@@ -8,6 +8,8 @@ import com.bluecreation.melodysmart.DeviceInfoService;
 import com.bluecreation.melodysmart.MelodySmartDevice;
 import com.bluecreation.melodysmart.MelodySmartListener;
 
+import ca.ualberta.smartbroom.BLEDevice;
+
 /**
  * Created by Stephen on 2015-01-31.
  */
@@ -18,13 +20,19 @@ public class BLEDeviceConnection implements MelodySmartListener {
     private MelodySmartDevice device;
     private int nextInfoType = 0;
 
-    public BLEDeviceConnection() {
+    public BLEDeviceConnection(BLEDevice bleDevice) {
         /* Get the instance of the Melody Smart Android library and initialize it */
         device = MelodySmartDevice.getInstance();
         device.registerListener(this);
         device.getDataService().registerListener(dataServiceListener);
         device.getBatteryService().registerListener(batteryServiceListener);
         device.getDeviceInfoService().registerListener(deviceInfoListener);
+
+        try {
+            device.connect(bleDevice.getDeviceAddress());
+        } catch(Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private BatteryService.Listener batteryServiceListener = new BatteryService.Listener() {
