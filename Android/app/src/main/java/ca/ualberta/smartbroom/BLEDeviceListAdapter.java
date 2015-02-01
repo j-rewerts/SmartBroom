@@ -23,7 +23,7 @@ public class BLEDeviceListAdapter extends ArrayAdapter<BLEDevice> {
         if (v == null) {
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.ble_device_list, null);
+            v = vi.inflate(R.layout.ble_device_list_item, null);
         }
 
         TextView deviceName = (TextView) v.findViewById(R.id.tDeviceName);

@@ -48,18 +48,10 @@ public class MyInfoActivity extends Activity {
 			return true;
 		}
         else if (id == R.id.action_connect) {
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
-                    MyInfoActivity.this);
-            builderSingle.setIcon(R.drawable.ic_launcher);
-            builderSingle.setTitle("Select A Device:-");
+            BLEDeviceDialog dialog = new BLEDeviceDialog(getApplicationContext());
+            dialog.show();
 
-            builderSingle.setAdapter(new BLEDeviceListAdapter(this, R.layout.ble_device_list, null),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
+            return true;
         }
 		return super.onOptionsItemSelected(item);
 	}
