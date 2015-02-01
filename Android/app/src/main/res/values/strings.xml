@@ -5,6 +5,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
     <string name="activity">ACTIVITIES</string>
     <string name="game">GAMES</string>
     <string name="practise">PRACTISE</string>

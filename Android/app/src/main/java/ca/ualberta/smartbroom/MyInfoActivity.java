@@ -1,6 +1,8 @@
 package ca.ualberta.smartbroom;
 
 import ca.ualberta.smartbroom.R;
+import ca.ualberta.smartbroom.conn.BLEDeviceConnection;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
@@ -55,6 +57,8 @@ public class MyInfoActivity extends Activity {
             newFragment.show(fm, "BLE_DEVICE");
 
             return true;
+        } else if (id == R.id.action_disconnect) {
+            BLEDeviceConnection.getInstance().disconnect();
         }
 		return super.onOptionsItemSelected(item);
 	}

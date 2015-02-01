@@ -1,6 +1,8 @@
 package ca.ualberta.smartbroom.conn;
 
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.bluecreation.melodysmart.BatteryService;
 import com.bluecreation.melodysmart.DataService;
@@ -19,20 +21,37 @@ public class BLEDeviceConnection implements MelodySmartListener {
 
     private MelodySmartDevice device;
     private int nextInfoType = 0;
+    private Context context;
+    private boolean connected = false;
 
-    public BLEDeviceConnection(BLEDevice bleDevice) {
+    private static BLEDeviceConnection instance;
+
+    public static BLEDeviceConnection getInstance() {
+        if (instance == null) instance = new BLEDeviceConnection();
+        return instance;
+    }
+
+    private BLEDeviceConnection() {
         /* Get the instance of the Melody Smart Android library and initialize it */
         device = MelodySmartDevice.getInstance();
         device.registerListener(this);
         device.getDataService().registerListener(dataServiceListener);
         device.getBatteryService().registerListener(batteryServiceListener);
         device.getDeviceInfoService().registerListener(deviceInfoListener);
+    }
 
+    public void connect(BLEDevice bleDevice, Context context) {
+        this.context = context;
         try {
             device.connect(bleDevice.getDeviceAddress());
         } catch(Exception e) {
             Log.e(TAG, e.getMessage());
         }
+    }
+
+    public void disconnect() {
+        if (!connected) return;
+        device.disconnect();
     }
 
     private BatteryService.Listener batteryServiceListener = new BatteryService.Listener() {
@@ -106,12 +125,16 @@ public class BLEDeviceConnection implements MelodySmartListener {
 
     @Override
     public void onDeviceConnected() {
-
+        connected = true;
+        if (context != null)
+            Toast.makeText(context, "Connected to device", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onDeviceDisconnected() {
-
+        connected = false;
+        if (context != null)
+            Toast.makeText(context, "Disconnected from device", Toast.LENGTH_SHORT).show();
     }
 
     @Override

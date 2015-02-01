@@ -19,6 +19,8 @@ import com.bluecreation.melodysmart.MelodySmartDevice;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ualberta.smartbroom.conn.BLEDeviceConnection;
+
 /**
  * Created by Jared on 2015-01-31.
  */
@@ -95,6 +97,7 @@ public class BLEDeviceDialog extends DialogFragment {
             scanLeDevice(false);
 
             Log.d(TAG, "Selected device " + adapter.getItem(i));
+            BLEDeviceConnection.getInstance().connect(adapter.getItem(i), getActivity().getApplicationContext());
             BLEDeviceDialog.this.dismiss();
         }
     };
