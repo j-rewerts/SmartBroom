@@ -21,10 +21,31 @@ BLEMate2 BTModu(&Serial);
 #define LED 4  //test LED pin is 4
 #define MUX_SELECT 2 //select for serial mux on pin 2
 
+#define ACCEL_X 0
+#define ACCEL_Y 1
+#define ACCEL_Z 2
+
+#define PRESS_1 3
+#define PRESS_2 4
+#define PRESS_3 5
+#define PRESS_4 6
+
 int leds_recieved = 0;
+
+int accelBuf[50];
+int pressBuf1[50];
+int pressBuf2[50];
+int pressBuf3[50];
+int pressBuf4[50];
+int buffPtr;
+
+long lastADCLog;
 
 void setup()
 {
+  lastADCLog = millis();
+  buffPtr = 0;
+  
   pinMode(MUX_SELECT, OUTPUT);
   pinMode(LED, OUTPUT);
   
@@ -101,7 +122,6 @@ void loop()
   //  and I can switch over to the PC to report what I've heard.
   static String fullBuffer = "";
   static long lastRXTime = millis();
-  static long lastADCRead = millis();
   if (lastRXTime + 1000 < millis())
   {
     if (fullBuffer != "")
@@ -162,7 +182,33 @@ void loop()
     //possibleCommand = "";
   }
   
-  
+  if(lastADCLog + 20 < millis())
+  {
+    accelBuf[buffPtr] = analogRead(ACCEL_X);
+    pressBuf1[buffPtr] = analogRead(PRESS_1);
+    pressBuf2[buffPtr] = analogRead(PRESS_2);
+    pressBuf3[buffPtr] = analogRead(PRESS_3);
+    pressBuf4[buffPtr] = analogRead(PRESS_4);
+    buffPtr++;
+    
+    if(buffPtr >= 50)
+    {
+      buffPtr = 0;
+      
+      /*
+      String buff = "";
+      for(int i = 0; i < 50; i++)
+      {
+        buff += String(accelBuf[i]) + " ";
+      }
+      
+      selectPC();
+      Serial.println(buff);
+      selectBLE();
+      */
+    }
+    lastADCLog = millis();
+  }
 }
 
 void setupPeripheral()
@@ -206,27 +252,27 @@ void decodeCommand(String request)
   if(request.equals("RQ_P_1"))
   {
     //pressure request recieved
-    BTModu.sendData("RS_P_1 42");
+    BTModu.sendData("RS_P_1 " + String(getPress1Data()));
   }
   else if(request.equals("RQ_P_2"))
   {
     //pressure request recieved
-    BTModu.sendData("RS_P_2 42");
+    BTModu.sendData("RS_P_2 " + String(getPress2Data()));
   }
   else if(request.equals("RQ_P_3"))
   {
     //pressure request recieved
-    BTModu.sendData("RS_P_3 42");
+    BTModu.sendData("RS_P_3 " + String(getPress3Data()));
   }
   else if(request.equals("RQ_P_4"))
   {
     //pressure request recieved
-    BTModu.sendData("RS_P_4 42");
+    BTModu.sendData("RS_P_4 " + String(getPress4Data()));
   }
   else if(request.equals("RQ_A"))
   {
     //accelerometer request recieved
-    BTModu.sendData("RS_A 42.0");
+    BTModu.sendData("RS_A " + String(getAccelFreq()));
   }
   else if(request.equals("RQ_ACK"))
   {
@@ -252,9 +298,91 @@ void decodeCommand(String request)
   }
 }
 
-void updateADCbuffers()
+int getPress1Data()
 {
+  long sum = 0;
+  for(int i = 0; i < 50; i++)
+  {
+    sum += pressBuf1[i];
+  }
   
+  return sum / 50;
+}
+
+int getPress2Data()
+{
+  long sum = 0;
+  for(int i = 0; i < 50; i++)
+  {
+    sum += pressBuf2[i];
+  }
+  
+  return sum / 50;
+}
+
+int getPress3Data()
+{
+  long sum = 0;
+  for(int i = 0; i < 50; i++)
+  {
+    sum += pressBuf3[i];
+  }
+  
+  return sum / 50;
+}
+
+int getPress4Data()
+{
+  long sum = 0;
+  for(int i = 0; i < 50; i++)
+  {
+    sum += pressBuf4[i];
+  }
+  
+  return sum / 50;
+}
+
+int getAccelFreq()
+{
+  int freq = 0;
+  
+  //get average
+  long sum = 0;
+  for(int i = 0; i < 50; i++)
+  {
+    sum += accelBuf[i];
+  }
+  int ave = sum / 50;
+  
+  int prevprev = accelBuf[0];
+  int prev = accelBuf[1];
+  int lowVal = ave;
+  int highVal = ave;
+  int curr;
+  for(int i = 2; i < 50; i++)
+  {
+    curr = accelBuf[i];
+    
+    if(prev < prevprev && prev < curr)
+    {
+      lowVal = prev;
+      if(highVal - lowVal > 20)
+      {
+        freq += 5;
+      }
+    }
+    else if(prev > prevprev && prev > curr)
+    {
+      highVal = prev;
+      if(highVal - lowVal > 20)
+      {
+        freq += 5;
+      }
+    }
+    prevprev = prev;
+    prev = curr;
+  }
+  return freq;
 }
 
 //funtions to change where serial port is directed
