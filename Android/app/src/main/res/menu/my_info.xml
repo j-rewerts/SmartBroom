@@ -13,5 +13,11 @@
         android:showAsAction="never"
         android:title="@string/action_connect"
         android:icon="@drawable/rfid_signal50"/>
+    <item
+        android:id="@+id/action_disconnect"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_disconnect"
+        android:icon="@drawable/rfid_signal50"/>
 
 </menu>
