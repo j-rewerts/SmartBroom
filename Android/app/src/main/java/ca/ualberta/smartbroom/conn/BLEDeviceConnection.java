@@ -123,6 +123,57 @@ public class BLEDeviceConnection implements MelodySmartListener {
         }
     };
 
+    public void cmdEcho(String data) {
+        device.getDataService().send("RQ_ECHO " + data);
+    }
+
+    public boolean cmdAck(DataService.Listener listener) {
+        if (!device.getDataService().available()) {
+            return false;
+        }
+
+        device.getDataService().registerListener(listener);
+        device.getDataService().send("RQ_ACK");
+        return true;
+    }
+
+    public boolean cmdAckUntilSuccess() {
+        class BooleanHolder {
+            public boolean value = false;
+        }
+        final BooleanHolder acknowledged = new BooleanHolder();
+        final long start = System.currentTimeMillis();
+        final long timeout = 2500;
+
+        DataService.Listener listener = new DataService.Listener() {
+            @Override
+            public void onReceived(String s) {
+                if (s.equals("RS_ACK")) {
+                    Log.d(TAG, "Time until acknowledge: " + (System.currentTimeMillis() - start) + "ms");
+                    acknowledged.value = true;
+                }
+            }
+
+            @Override
+            public void onConnected(boolean b) {
+
+            }
+        };
+
+        while (!acknowledged.value || System.currentTimeMillis() - start > timeout) {
+            device.getDataService().registerListener(listener);
+            device.getDataService().send("RQ_ACK");
+            try {
+                Thread.sleep(250);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } finally {
+                device.getDataService().unregisterListener(listener);
+            }
+        }
+        return acknowledged.value;
+    }
+
     @Override
     public void onDeviceConnected() {
         connected = true;
@@ -148,5 +199,9 @@ public class BLEDeviceConnection implements MelodySmartListener {
             device.getDeviceInfoService().read(types[nextInfoType]);
             nextInfoType++;
         }
+    }
+
+    public interface DataListener {
+        public void onReceived(String data);
     }
 }
