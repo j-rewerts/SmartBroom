@@ -33,12 +33,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <service
             android:name=".comm.BLEBroomService"
             android:enabled="true"
             android:exported="true" >
         </service>
+        <activity
+            android:name=".BluetoothDialogActivity"
+            android:label="@string/title_activity_bluetooth_dialog" >
+        </activity>
     </application>
 
 </manifest>

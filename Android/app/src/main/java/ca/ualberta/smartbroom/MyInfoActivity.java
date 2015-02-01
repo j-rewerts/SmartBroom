@@ -1,8 +1,11 @@
 package ca.ualberta.smartbroom;
 
+import ca.ualberta.smartbroom.R;
 import android.app.Activity;
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,6 +13,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MyInfoActivity extends Activity {
 
@@ -19,8 +25,10 @@ public class MyInfoActivity extends Activity {
 		setContentView(R.layout.activity_my_info);
 		if (savedInstanceState == null) {
 			getFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, new MyOptionsFragment()).commit();
 		}
+
+
 	}
 
 	@Override
@@ -39,22 +47,41 @@ public class MyInfoActivity extends Activity {
 		if (id == R.id.action_settings) {
 			return true;
 		}
+        else if (id == R.id.action_connect) {
+            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
+                    MyInfoActivity.this);
+            builderSingle.setIcon(R.drawable.ic_launcher);
+            builderSingle.setTitle("Select A Device:-");
+
+            builderSingle.setAdapter(new BLEDeviceListAdapter(this, R.layout.ble_device_list, null),
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                        }
+                    });
+        }
 		return super.onOptionsItemSelected(item);
 	}
 
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
-	public static class PlaceholderFragment extends Fragment {
+	public static class MyOptionsFragment extends Fragment {
 
-		public PlaceholderFragment() {
+		public MyOptionsFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_my_info,
+			View rootView = inflater.inflate(R.layout.fragment_my_options,
 					container, false);
+
+            if (getView() == null) {
+                return rootView;
+            }
+
 			return rootView;
 		}
 	}
