@@ -29,4 +29,19 @@ public class BLEDevice {
     public void setDeviceAddress(String mDeviceAddress) {
         this.mDeviceAddress = mDeviceAddress;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof BLEDevice)) return false;
+        BLEDevice dev = (BLEDevice) other;
+        if (getDeviceName().equals(dev.getDeviceName()) && getDeviceAddress().equals(dev.getDeviceAddress()))
+            return true;
+        else
+            return false;
+    }
+
+    @Override
+    public String toString() {
+        return getDeviceName() + " (" + getDeviceAddress() + ")";
+    }
 }
