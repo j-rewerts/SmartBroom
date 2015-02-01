@@ -11,6 +11,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.bluecreation.melodysmart.DataService;
 
 import java.util.ArrayList;
 
@@ -60,6 +63,11 @@ public class MyInfoActivity extends Activity {
             return true;
         } else if (id == R.id.action_disconnect) {
             BLEDeviceConnection.getInstance().disconnect();
+        } else if (id == R.id.action_command) {
+            BLEDeviceConnection.getInstance().cmdAck();
+            BLEDeviceConnection.getInstance().cmdEcho("DATA!");
+            BLEDeviceConnection.getInstance().cmdAccel();
+            BLEDeviceConnection.getInstance().cmdPressure();
         }
 		return super.onOptionsItemSelected(item);
 	}

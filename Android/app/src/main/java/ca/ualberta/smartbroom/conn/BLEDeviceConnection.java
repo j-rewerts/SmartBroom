@@ -80,6 +80,21 @@ public class BLEDeviceConnection implements MelodySmartListener {
         @Override
         public void onReceived(final String data) {
             Log.d(TAG, "Data received: " + data);
+            if (data.startsWith("RS_ACK")) {
+                Log.d(TAG, "Acknowledged by device.");
+            } else if (data.startsWith("RS_ECHO")) {
+                Log.d(TAG, "Device echoed " + data.substring("RS_ECHO".length()));
+            } else if (data.startsWith("RS_A")) {
+                Log.d(TAG, "Acceleration: " + data.substring("RS_A".length()));
+            } else if (data.startsWith("RS_P_1")) {
+                Log.d(TAG, "Pressure 1: " + data.substring("RS_P_1".length()));
+            } else if (data.startsWith("RS_P_2")) {
+                Log.d(TAG, "Pressure 2: " + data.substring("RS_P_2".length()));
+            } else if (data.startsWith("RS_P_3")) {
+                Log.d(TAG, "Pressure 3: " + data.substring("RS_P_3".length()));
+            } else if (data.startsWith("RS_P_4")) {
+                Log.d(TAG, "Pressure 4: " + data.substring("RS_P_4".length()));
+            }
         }
     };
 
@@ -127,51 +142,31 @@ public class BLEDeviceConnection implements MelodySmartListener {
         device.getDataService().send("RQ_ECHO " + data);
     }
 
-    public boolean cmdAck(DataService.Listener listener) {
+    public boolean cmdPressure() {
         if (!device.getDataService().available()) {
             return false;
         }
-
-        device.getDataService().registerListener(listener);
-        device.getDataService().send("RQ_ACK");
+        device.getDataService().send("RQ_P_1");
+        device.getDataService().send("RQ_P_2");
+        device.getDataService().send("RQ_P_3");
+        device.getDataService().send("RQ_P_4");
         return true;
     }
 
-    public boolean cmdAckUntilSuccess() {
-        class BooleanHolder {
-            public boolean value = false;
+    public boolean cmdAccel() {
+        if (!device.getDataService().available()) {
+            return false;
         }
-        final BooleanHolder acknowledged = new BooleanHolder();
-        final long start = System.currentTimeMillis();
-        final long timeout = 2500;
+        device.getDataService().send("RQ_A");
+        return true;
+    }
 
-        DataService.Listener listener = new DataService.Listener() {
-            @Override
-            public void onReceived(String s) {
-                if (s.equals("RS_ACK")) {
-                    Log.d(TAG, "Time until acknowledge: " + (System.currentTimeMillis() - start) + "ms");
-                    acknowledged.value = true;
-                }
-            }
-
-            @Override
-            public void onConnected(boolean b) {
-
-            }
-        };
-
-        while (!acknowledged.value || System.currentTimeMillis() - start > timeout) {
-            device.getDataService().registerListener(listener);
-            device.getDataService().send("RQ_ACK");
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                device.getDataService().unregisterListener(listener);
-            }
+    public boolean cmdAck() {
+        if (!device.getDataService().available()) {
+            return false;
         }
-        return acknowledged.value;
+        device.getDataService().send("RQ_ACK");
+        return true;
     }
 
     @Override
