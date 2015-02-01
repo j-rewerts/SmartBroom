@@ -164,12 +164,8 @@ void loop()
       inputBuffer.remove(0,4); // Remove RCV= from front.
       fullBuffer += inputBuffer;
       
+      decodeCommand(inputBuffer);
       
-      if(inputBuffer.equals("LED ON")){
-        leds_recieved++;
-        digitalWrite(LED, HIGH);
-        BTModu.sendData("Sure thing boss - " + String(leds_recieved));
-      }
       inputBuffer = "";
     }
     else
@@ -218,6 +214,62 @@ void setupPeripheral()
   BTModu.reset();
   
   // We're set up to allow anything to connect to us now.
+}
+
+void decodeCommand(String request)
+{
+  if(request.equals("RQ_P_1"))
+  {
+    //pressure request recieved
+    BTModu.sendData("RS_P_1 42");
+  }
+  else if(request.equals("RQ_P_2"))
+  {
+    //pressure request recieved
+    BTModu.sendData("RS_P_2 42");
+  }
+  else if(request.equals("RQ_P_3"))
+  {
+    //pressure request recieved
+    BTModu.sendData("RS_P_3 42");
+  }
+  else if(request.equals("RQ_P_4"))
+  {
+    //pressure request recieved
+    BTModu.sendData("RS_P_4 42");
+  }
+  else if(request.equals("RQ_A"))
+  {
+    //accelerometer request recieved
+    BTModu.sendData("RS_A 42.0");
+  }
+  else if(request.equals("RQ_ACK"))
+  {
+    //acknowledge request recieved
+    BTModu.sendData("RS_ACK");
+  }
+  else if(request.startsWith("RQ_ECHO"))
+  {
+    //echo request recieved
+    request.remove(0, 8);
+    BTModu.sendData("RS_ECHO " + request);
+  }
+  else if(request.equals("LED ON"))
+  {
+    //led command recieved
+    leds_recieved++;
+    digitalWrite(LED, HIGH);
+    BTModu.sendData("Sure thing boss - " + String(leds_recieved));
+  }
+  else
+  {
+    BTModu.sendData("RS_ERR");
+  }
+}
+
+void updateADCbuffers()
+{
+  
 }
 
 //funtions to change where serial port is directed
