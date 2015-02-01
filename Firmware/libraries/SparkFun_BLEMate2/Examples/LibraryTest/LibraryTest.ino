@@ -1,3 +1,5 @@
+
+
 /****************************************************************
 Code to demonstrate the use of the BC118 BLE module on the
 BLE Mate 2 board by SparkFun electronics.
@@ -21,10 +23,14 @@ BLEMate2 BTModu(&Serial);
 // This boolean determines whether we're going to do a central or peripheral
 //  example with this code.
 
-boolean central = true;
+#define LED 4
+
+boolean central = false;
 
 void setup()
 {
+  pinMode(4, OUTPUT);
+  
   pinMode(2, OUTPUT);    // Control for the SmartBasic. If you look at the
                          //  bottom of the sketch, you'll see that I've added
                          //  functions called "selectBLE()" and "selectPC()" 
@@ -307,6 +313,8 @@ void setupPeripheralExample()
   BTModu.reset();
   
   // We're set up to allow anything to connect to us now.
+  
+  //BTModu.BLEAdvertise();
 }
 
 // Below this point are support functions for the SmartBasic. If you're not

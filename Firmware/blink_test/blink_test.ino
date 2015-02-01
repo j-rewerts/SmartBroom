@@ -6,7 +6,7 @@
                //  to remain in programming mode.
 
 #define ARDUINO_IDE   LOW  // Constants to make our routing change
-#define AUX_TERMINAL  HIGH //  more obvious. When the SEL pin is 
+#define BLE_MATE     HIGH //  more obvious. When the SEL pin is 
                            //  LOW, data is routed to the
                            //  programming port.
 
