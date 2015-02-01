@@ -12,5 +12,6 @@
     <string name="tracked">Tracked</string>
     <string name="connect">CONNECT</string>
     <string name="title_activity_bluetooth_dialog">BluetoothDialogActivity</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

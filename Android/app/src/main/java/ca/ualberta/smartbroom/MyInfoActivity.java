@@ -4,7 +4,9 @@ import ca.ualberta.smartbroom.R;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -48,8 +50,9 @@ public class MyInfoActivity extends Activity {
 			return true;
 		}
         else if (id == R.id.action_connect) {
-            BLEDeviceDialog dialog = new BLEDeviceDialog(getApplicationContext());
-            dialog.show();
+            FragmentManager fm = getFragmentManager();
+            DialogFragment newFragment = new BLEDeviceDialog();
+            newFragment.show(fm, "BLE_DEVICE");
 
             return true;
         }
