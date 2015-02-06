@@ -8,11 +8,14 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bluecreation.melodysmart.MelodySmartDevice;
 
@@ -86,7 +89,12 @@ public class BLEDeviceDialog extends DialogFragment {
             Log.d(TAG, "Found device " + bleDevice);
             if (!deviceList.contains(bleDevice)) {
                 deviceList.add(bleDevice);
-                adapter.notifyDataSetChanged();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         }
     };
