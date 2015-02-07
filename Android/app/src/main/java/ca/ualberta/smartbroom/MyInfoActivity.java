@@ -97,9 +97,10 @@ public class MyInfoActivity extends Activity {
      */
 	public static class MyOptionsFragment extends Fragment implements GraphListener{
 
-        BarGraph graphs;
+        BarGraph pressureGraph;
         BarGraph frequencyGraph;
-        ArrayList<Bar> barList;
+        ArrayList<Bar> pressureBarList;
+        ArrayList<Bar> frequencyBarList;
 
 		public MyOptionsFragment() {
 
@@ -124,23 +125,30 @@ public class MyInfoActivity extends Activity {
                 }
             });
 
-            barList = new ArrayList<Bar>();
+            pressureBarList = new ArrayList<Bar>();
+            frequencyBarList = new ArrayList<Bar>();
 
             Bar pressureBar = new Bar();
             Bar frequencyBar = new Bar();
             pressureBar.setName("Pressure");
             frequencyBar.setName("Frequency");
-            pressureBar.setValue(10);
-            frequencyBar.setValue(20);
+            pressureBar.setValue(0);
+            frequencyBar.setValue(0);
             pressureBar.setColor(Color.parseColor("#99CC00"));
             frequencyBar.setColor(Color.parseColor("#FFBB33"));
 
-            barList.add(pressureBar);
-            barList.add(frequencyBar);
+            pressureBarList.add(pressureBar);
+            frequencyBarList.add(frequencyBar);
 
-            graphs = (BarGraph) rootView.findViewById(R.id.graphView);
-            graphs.setBars(barList);
-            graphs.setUnit(" ");
+            pressureGraph = (BarGraph) rootView.findViewById(R.id.pressureGraph);
+            pressureGraph.setBars(pressureBarList);
+            pressureGraph.setUnit("");
+            pressureGraph.setAxisMax(800);
+
+            frequencyGraph = (BarGraph) rootView.findViewById(R.id.frequencyGraph);
+            frequencyGraph.setBars(frequencyBarList);
+            frequencyGraph.setUnit("");
+            frequencyGraph.setAxisMax(30);
 
 			return rootView;
 		}
@@ -152,7 +160,8 @@ public class MyInfoActivity extends Activity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        barList.get(0).setValue((float) value);
+                        frequencyBarList.get(0).setValue((float) value);
+                        frequencyGraph.notifyDataSetChanged();
                     }
                 });
             }
@@ -160,7 +169,8 @@ public class MyInfoActivity extends Activity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        barList.get(1).setValue((float) value);
+                        pressureBarList.get(0).setValue((float) value);
+                        pressureGraph.notifyDataSetChanged();
                     }
                 });
             }

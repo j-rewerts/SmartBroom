@@ -252,9 +252,27 @@
                     <com.echo.holographlibrary.BarGraph
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:id="@+id/graphView" />
+                        android:id="@+id/pressureGraph" />
                 </LinearLayout>
 
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="fill_parent"
+                    android:background="#c0c0c0"
+                    android:layout_marginLeft="@dimen/list_item_spacing_left"
+                    android:layout_marginRight="@dimen/list_item_spacing_right"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center">
+                    <com.echo.holographlibrary.BarGraph
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:id="@+id/frequencyGraph" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
