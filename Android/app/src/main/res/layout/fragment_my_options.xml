@@ -237,7 +237,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_normal"
-                android:text="CURRENT PRESSURE" />
+                android:text="CURRENT STATS" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -249,45 +249,12 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center">
-                    <TextView
-                        android:id="@+id/pressureText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_large"
-                        android:text="@string/default_best" />
-                    <TextView
-                        android:id="@+id/textView19"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="PRESSURE" />
+                    <com.echo.holographlibrary.BarGraph
+                        android:layout_width="match_parent"
+                        android:layout_height="150dp"
+                        android:id="@+id/graphView" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="fill_parent"
-                    android:background="#c0c0c0"
-                    android:layout_marginLeft="@dimen/list_item_spacing_left"
-                    android:layout_marginRight="@dimen/list_item_spacing_right"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center">
-                    <TextView
-                        android:id="@+id/frequencyText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/text_large"
-                        android:text="0" />
-
-                    <TextView
-                        android:id="@+id/textView111"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="FREQUENCY" />
-                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

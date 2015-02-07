@@ -1,35 +1,25 @@
 package ca.ualberta.smartbroom;
 
-import ca.ualberta.smartbroom.R;
 import ca.ualberta.smartbroom.conn.BLEDeviceConnection;
 
 import android.app.Activity;
-import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.bluecreation.melodysmart.DataService;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.BarGraphSeries;
-import com.jjoe64.graphview.series.DataPoint;
+import com.echo.holographlibrary.Bar;
+import com.echo.holographlibrary.BarGraph;
 
 import java.util.ArrayList;
 
@@ -107,6 +97,9 @@ public class MyInfoActivity extends Activity {
      */
 	public static class MyOptionsFragment extends Fragment implements GraphListener{
 
+        BarGraph graphs;
+        BarGraph frequencyGraph;
+        ArrayList<Bar> barList;
 
 		public MyOptionsFragment() {
 
@@ -131,7 +124,23 @@ public class MyInfoActivity extends Activity {
                 }
             });
 
+            barList = new ArrayList<Bar>();
 
+            Bar pressureBar = new Bar();
+            Bar frequencyBar = new Bar();
+            pressureBar.setName("Pressure");
+            frequencyBar.setName("Frequency");
+            pressureBar.setValue(10);
+            frequencyBar.setValue(20);
+            pressureBar.setColor(Color.parseColor("#99CC00"));
+            frequencyBar.setColor(Color.parseColor("#FFBB33"));
+
+            barList.add(pressureBar);
+            barList.add(frequencyBar);
+
+            graphs = (BarGraph) rootView.findViewById(R.id.graphView);
+            graphs.setBars(barList);
+            graphs.setUnit(" ");
 
 			return rootView;
 		}
@@ -143,8 +152,7 @@ public class MyInfoActivity extends Activity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        TextView tv = (TextView) view.findViewById(R.id.frequencyText);
-                        tv.setText(String.valueOf(value));
+                        barList.get(0).setValue((float) value);
                     }
                 });
             }
@@ -152,8 +160,7 @@ public class MyInfoActivity extends Activity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        TextView tv = (TextView) view.findViewById(R.id.pressureText);
-                        tv.setText(String.valueOf(value));
+                        barList.get(1).setValue((float) value);
                     }
                 });
             }
