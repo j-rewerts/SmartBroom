@@ -143,12 +143,12 @@ public class MyInfoActivity extends Activity {
             pressureGraph = (BarGraph) rootView.findViewById(R.id.pressureGraph);
             pressureGraph.setBars(pressureBarList);
             pressureGraph.setUnit("");
-            pressureGraph.setAxisMax(800);
+            pressureGraph.setAxisMax(300);
 
             frequencyGraph = (BarGraph) rootView.findViewById(R.id.frequencyGraph);
             frequencyGraph.setBars(frequencyBarList);
             frequencyGraph.setUnit("");
-            frequencyGraph.setAxisMax(30);
+            frequencyGraph.setAxisMax(8);
 
 			return rootView;
 		}
@@ -169,7 +169,7 @@ public class MyInfoActivity extends Activity {
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
-                        pressureBarList.get(0).setValue((float) value);
+                        pressureBarList.get(0).setValue((float) ((value - 300 >= 0) ? (value - 300) : 0));
                         pressureGraph.notifyDataSetChanged();
                     }
                 });
