@@ -86,13 +86,13 @@ public class BLEDeviceDialog extends DialogFragment {
     private final BluetoothAdapter.LeScanCallback mLeScanCallback = new BluetoothAdapter.LeScanCallback() {
         @Override
         public void onLeScan(final BluetoothDevice device, int rssi, byte[] scanRecord) {
-            BLEDevice bleDevice = new BLEDevice(device.getName(), device.getAddress());
+            final BLEDevice bleDevice = new BLEDevice(device.getName(), device.getAddress());
             Log.d(TAG, "Found device " + bleDevice);
             if (!deviceList.contains(bleDevice)) {
-                deviceList.add(bleDevice);
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(new Runnable() {
                     public void run() {
+                        deviceList.add(bleDevice);
                         adapter.notifyDataSetChanged();
                     }
                 });
