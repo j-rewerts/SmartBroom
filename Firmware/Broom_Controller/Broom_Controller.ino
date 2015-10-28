@@ -3,8 +3,10 @@
 /****************************************************
 This code is the main controller for the BEDHOOD curling
 broom.  It interfaces with the pressure sensors, accelerometer,
-on board memory, and BLE radio.  Developed during the
-u of a computer engineering hackathon
+on board memory, and BLE radio.  Developed during HackED, a hackathon 
+from the University of Alberta Computer Engineering Club.
+For more information see here: http://hackathon.compeclub.com/
+Warning, link may be outdated.
 
 This uses the SparkFun Electronics BLE library developed by
 Mike Hord.  If he ever finds himself in Edmonton Alberta I
